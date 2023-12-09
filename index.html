@@ -1,0 +1,62 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      .container {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: azure;
+      }
+
+      .image-frame {
+        min-width: 500px;
+        min-height: 300px;
+        background-color: silver;
+      }
+    </style>
+    <title>Raspberry PI 4b camera</title>
+  </head>
+  <body>
+    <div class="container">
+      <p>Raspberry Pi streaming</p>
+      <div class="image-frame" id="image-frame"></div>
+      <p id="connection-status"></p>
+    </div>
+    <script>
+      window.onload = function () {
+        const connectionStatus = document.getElementById("connection-status");
+        const imageFrame = document.getElementById("image-frame");
+
+        conn = new WebSocket("ws://localhost:8001/");
+        conn.onconnected = function () {
+          connectionStatus.innerText = "connected";
+        };
+        conn.onerror = function (err) {
+          console.log(err);
+          connectionStatus.innerText =
+            "error connection " + (err.message || "");
+        };
+        let setImgSize = false;
+        conn.onmessage = async function (e) {
+          let base64img = await e.data.text();
+          if (!setImgSize) {
+            let img = new Image();
+            img.onload = () => {
+              imageFrame.style.width = img.naturalWidth + "px";
+              imageFrame.style.height = img.naturalHeight + "px";
+              setImgSize = true;
+            };
+            img.src = base64img;
+          }
+
+          imageFrame.style.backgroundImage = `url("${base64img}")`;
+        };
+      };
+    </script>
+  </body>
+</html>
