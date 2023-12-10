@@ -9,7 +9,6 @@ class PiCameraHandler:
         self.picam2 = Picamera2()
         camera_config = self.picam2.create_preview_configuration()
         self.picam2.configure(camera_config)
-        # self.picam2.start_preview(Preview.DRM)
         self.picam2.start()
         time.sleep(2)
         pass
@@ -19,7 +18,7 @@ class PiCameraHandler:
 
     def getFrames(self):
         while True:
-            frame = self.picam2.capture_buffer()
+            frame = self.picam2.capture_array()
             print("frame_picam", frame)
             frame = cv2.resize(frame, (0, 0), fx=0.3, fy=0.3)
 
