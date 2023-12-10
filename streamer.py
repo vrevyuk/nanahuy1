@@ -4,7 +4,7 @@ import websockets
 from camera_handler import CameraHandler 
 
 async def handle_socket_connection(websocket, path):
-    print("connection has been opened")
+    print("connection has been opened", websocket)
     for frame in camera.getFrames():
         await websocket.send(frame)
 
