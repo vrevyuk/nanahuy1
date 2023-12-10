@@ -1,10 +1,13 @@
 import sys
 import cv2
 import base64
+import time
 
 class CameraHandler:
     def __init__(self):
-        self.__capture = cv2.VideoCapture(0)
+        self.__capture = cv2.VideoCapture('/dev/video0', cv2.CAP_V4L)
+        time.sleep(1)
+        # self.__capture.open()
         print("camera", self.__capture)
         pass
 
